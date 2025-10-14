@@ -1,0 +1,32 @@
+.diary-card {
+  margin: 0 0 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  break-inside: avoid; /* 防止在 columns 中被拆断 */
+
+  .photo {
+    display: block;
+    width: 100%;
+    /* 高度自适应（mode="widthFix" 保持宽度） */
+  }
+
+  .caption {
+    padding: 8px 10px;
+    .date {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+    .text {
+      font-size: 14px;
+      color: #222;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+}

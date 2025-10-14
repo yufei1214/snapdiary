@@ -3,6 +3,8 @@ import { defineConfig } from '@tarojs/cli'
 import devConfig from './dev'
 import prodConfig from './prod'
 
+const path = require('path')
+
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig(async (merge, { command, mode }) => {
   const baseConfig = {
@@ -17,6 +19,9 @@ export default defineConfig(async (merge, { command, mode }) => {
     },
     sourceRoot: 'src',
     outputRoot: 'dist',
+    alias: {
+      '@': path.resolve(__dirname, '..', 'src'),
+    },
     plugins: [
        '@taro-hooks/plugin-react' 
     ],

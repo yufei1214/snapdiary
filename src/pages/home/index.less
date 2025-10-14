@@ -1,0 +1,18 @@
+/* 整体页面为 ScrollView，内部使用 CSS columns 实现瀑布流 */
+.home {
+  height: 100%;
+  background: #f5f6f8;
+  padding: 12px;
+}
+
+.masonry {
+  column-count: 2; /* 列数：手机可用 2 列，pad 可改成 3 */
+  column-gap: 12px;
+  /* 把每个 card 的 margin-bottom 在 card 内部控制 */
+}
+
+.loader {
+  text-align: center;
+  padding: 12px 0;
+  color: #888;
+}
