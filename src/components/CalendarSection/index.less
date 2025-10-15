@@ -1,0 +1,152 @@
+.calendar-section {
+  background: #f5f5f5;
+  border-radius: 0 0 32rpx 32rpx;
+  padding: 32rpx 32rpx 24rpx;
+  margin-bottom: 24rpx;
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32rpx;
+
+    .month-selector {
+      display: flex;
+      align-items: center;
+      gap: 24rpx;
+
+      .arrow-btn {
+        width: 48rpx;
+        height: 48rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        .arrow-icon {
+          font-size: 48rpx;
+          color: #666;
+          font-weight: 300;
+          line-height: 1;
+        }
+      }
+
+      .month-text {
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #333;
+        min-width: 220rpx;
+        text-align: center;
+      }
+    }
+
+    .view-all-text {
+      font-size: 28rpx;
+      color: #999;
+    }
+  }
+
+  .calendar-body {
+    .calendar-weekdays {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 16rpx;
+
+      .weekday-item {
+        flex: 1;
+        text-align: center;
+        font-size: 26rpx;
+        color: #999;
+        padding: 8rpx 0;
+      }
+    }
+
+    .calendar-days {
+      display: flex;
+      flex-wrap: wrap;
+
+      .day-item {
+        width: 14.28%; // 7天一行
+        aspect-ratio: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-bottom: 16rpx;
+
+        &.day-empty {
+          visibility: hidden;
+        }
+
+        .day-number {
+          font-size: 28rpx;
+          color: #333;
+          margin-bottom: 4rpx;
+        }
+
+        .diary-dot {
+          font-size: 32rpx;
+          position: absolute;
+          bottom: 0;
+        }
+
+        &.day-today {
+          .day-number {
+            width: 60rpx;
+            height: 60rpx;
+            line-height: 60rpx;
+            border-radius: 50%;
+            border: 2rpx solid #333;
+            text-align: center;
+            font-weight: 600;
+          }
+        }
+
+        &.day-has-diary {
+          .day-number {
+            color: #ff6b00;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+
+    .calendar-expand-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24rpx;
+      padding-top: 24rpx;
+      border-top: 1rpx solid #e5e5e5;
+
+      .expand-text {
+        font-size: 26rpx;
+        color: #666;
+      }
+
+      .expand-btn {
+        display: flex;
+        align-items: center;
+        padding: 8rpx 24rpx;
+        background: #fff;
+        border-radius: 32rpx;
+
+        .expand-btn-text {
+          font-size: 26rpx;
+          color: #666;
+        }
+      }
+    }
+  }
+}
+
+// 添加点击效果
+.day-item:active:not(.day-empty) {
+  opacity: 0.6;
+}
+
+.arrow-btn:active,
+.expand-btn:active,
+.view-all-text:active {
+  opacity: 0.6;
+}

@@ -1,0 +1,75 @@
+.datetime-header {
+  padding: 32rpx 32rpx 24rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+
+  .datetime-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16rpx;
+
+    .datetime-main {
+      display: flex;
+      align-items: baseline;
+      gap: 16rpx;
+
+      .date-text {
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .time-text {
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .weekday-text {
+        font-size: 28rpx;
+        color: #999;
+      }
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 24rpx;
+
+      .action-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8rpx;
+        padding: 8rpx 16rpx;
+        border-radius: 12rpx;
+        background: #f8f8f8;
+        transition: all 0.3s;
+
+        &:active {
+          background: #e8e8e8;
+          transform: scale(0.95);
+        }
+
+        .action-icon {
+          font-size: 36rpx;
+          line-height: 1;
+        }
+
+        .action-label {
+          font-size: 22rpx;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  .lunar-row {
+    padding-left: 4rpx;
+
+    .lunar-text {
+      font-size: 24rpx;
+      color: #999;
+    }
+  }
+}

@@ -3,6 +3,7 @@ export default defineAppConfig({
   'pages/home/index',
   'pages/add/index',
   'pages/mine/index',
+  'pages/diary-edit/index',
 ],
 
   window: {

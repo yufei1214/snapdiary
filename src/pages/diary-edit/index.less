@@ -1,0 +1,243 @@
+.diary-edit-page {
+  min-height: 100vh;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+
+  // 自定义导航栏
+  .custom-navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1rpx solid #f0f0f0;
+    z-index: 100;
+    padding-top: env(safe-area-inset-top);
+
+    .navbar-content {
+      height: 88rpx;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32rpx;
+
+      .nav-left {
+        width: 80rpx;
+        
+        .back-icon {
+          font-size: 56rpx;
+          color: #333;
+          font-weight: 300;
+          line-height: 1;
+        }
+
+        &:active {
+          opacity: 0.6;
+        }
+      }
+
+      .nav-title {
+        flex: 1;
+        text-align: center;
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .nav-right {
+        width: 80rpx;
+        display: flex;
+        justify-content: flex-end;
+        gap: 24rpx;
+
+        .more-icon,
+        .record-icon {
+          font-size: 32rpx;
+          color: #333;
+          
+          &:active {
+            opacity: 0.6;
+          }
+        }
+      }
+    }
+  }
+
+  // 页面内容
+  .page-content {
+    flex: 1;
+    height: calc(100vh - 88rpx - 180rpx - env(safe-area-inset-top));
+
+    // 内容输入区域
+    .content-section {
+      padding: 24rpx 32rpx;
+      min-height: 400rpx;
+      position: relative;
+
+      .content-input {
+        width: 100%;
+        font-size: 30rpx;
+        line-height: 1.8;
+        color: #333;
+        min-height: 400rpx;
+      }
+
+      .content-placeholder {
+        color: #ccc;
+      }
+
+      .auto-save-tip {
+        position: absolute;
+        bottom: 32rpx;
+        right: 32rpx;
+        font-size: 22rpx;
+        color: #999;
+        padding: 8rpx 16rpx;
+        background: #f8f8f8;
+        border-radius: 24rpx;
+      }
+    }
+
+    // 底部操作区域
+    .bottom-actions {
+      padding: 24rpx 32rpx;
+      border-top: 1rpx solid #f0f0f0;
+
+      .action-row {
+        display: flex;
+        flex-direction: column;
+        gap: 2rpx;
+        background: #f8f8f8;
+        border-radius: 12rpx;
+        overflow: hidden;
+
+        .action-item {
+          display: flex;
+          align-items: center;
+          padding: 24rpx 32rpx;
+          background: #fff;
+          transition: all 0.3s;
+
+          &:active {
+            background: #f8f8f8;
+          }
+
+          .action-item-icon {
+            font-size: 32rpx;
+            margin-right: 24rpx;
+          }
+
+          .action-item-text {
+            flex: 1;
+            font-size: 28rpx;
+            color: #333;
+          }
+
+          .action-item-arrow {
+            font-size: 32rpx;
+            color: #ccc;
+            font-weight: 300;
+          }
+        }
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 32rpx;
+        padding: 0 16rpx;
+
+        .info-item {
+          display: flex;
+          align-items: center;
+          gap: 12rpx;
+
+          .info-icon {
+            font-size: 28rpx;
+          }
+
+          .info-text {
+            font-size: 26rpx;
+            color: #666;
+          }
+
+          &.voice-input {
+            padding: 12rpx 32rpx;
+            background: #f0f8f0;
+            border-radius: 32rpx;
+            transition: all 0.3s;
+
+            &:active {
+              background: #e0f0e0;
+            }
+
+            .voice-icon {
+              font-size: 28rpx;
+            }
+
+            .voice-text {
+              font-size: 26rpx;
+              color: #52c41a;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+
+    .bottom-placeholder {
+      height: 120rpx;
+    }
+  }
+
+  // 保存按钮区域
+  .save-btn-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32rpx;
+    padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, #fff 70%, transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16rpx;
+
+    .save-btn {
+      width: 100%;
+      max-width: 500rpx;
+      padding: 28rpx;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 64rpx;
+      box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
+      transition: all 0.3s;
+
+      &:active {
+        transform: scale(0.98);
+        box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.5);
+      }
+
+      .save-btn-text {
+        display: block;
+        text-align: center;
+        font-size: 32rpx;
+        font-weight: 600;
+        color: #fff;
+      }
+    }
+
+    .faq-link {
+      .faq-text {
+        font-size: 26rpx;
+        color: #999;
+        
+        &:active {
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+}
