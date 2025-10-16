@@ -1,10 +1,10 @@
 export default defineAppConfig({
   pages: [
-  'pages/home/index',
-  'pages/add/index',
-  'pages/mine/index',
-  'pages/diary-edit/index',
-],
+    'pages/home/index',
+    'pages/data/index',
+    'pages/mine/index',
+    'pages/diary-edit/index',
+  ],
 
   window: {
     navigationBarTitleText: '随影日记',
@@ -22,10 +22,10 @@ export default defineAppConfig({
       selectedIconPath: 'assets/icons/menu_album_active.png'
     },
     {
-      pagePath: 'pages/add/index',
-      text: '添加',
-      iconPath: 'assets/icons/menu_add.png',
-      selectedIconPath: 'assets/icons/menu_add_active.png'
+      pagePath: 'pages/data/index',
+      text: '数据',
+      iconPath: 'assets/icons/data.png',
+      selectedIconPath: 'assets/icons/data_actived.png'
     },
     {
       pagePath: 'pages/mine/index',
