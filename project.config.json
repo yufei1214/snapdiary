@@ -1,8 +1,8 @@
 {
   "miniprogramRoot": "dist/",
   "projectname": "snapdiary",
-  "description": "",
-  "appid": "touristappid",
+  "description": "随影日记",
+  "appid": "wx104e94ae21a9aff5",
   "setting": {
     "urlCheck": true,
     "es6": false,
@@ -16,10 +16,35 @@
     "coverView": true,
     "showShadowRootInWxmlPanel": false,
     "scopeDataCheck": false,
-    "useCompilerModule": false
+    "useCompilerModule": false,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
   },
+  "cloudfunctionRoot": "cloud/",
+  "cloudbaseRoot": "cloud/",
   "compileType": "miniprogram",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
-  "condition": {}
+  "condition": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {}
 }

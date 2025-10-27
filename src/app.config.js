@@ -4,6 +4,7 @@ export default defineAppConfig({
     'pages/data/index',
     'pages/mine/index',
     'pages/diary-edit/index',
+    'pages/diary-detail/index',
   ],
 
   window: {

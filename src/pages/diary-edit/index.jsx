@@ -90,40 +90,54 @@ const DiaryEdit = () => {
     Taro.showLoading({ title: '保存中...' });
 
     try {
-      // TODO: 上传图片到云存储
-      // TODO: 保存日记数据到云数据库
-      
-      const diaryData = {
-        datetime: datetime.toISOString(),
-        mood,
-        weather,
-        content,
-        images,
-        category,
-        location,
-        createTime: new Date().toISOString()
-      };
+      // 1. 上传图片到云存储
+      const uploadedImages = [];
+      for (let i = 0; i < images.length; i++) {
+        const tempFilePath = images[i];
+        const cloudPath = `diary-images/${Date.now()}-${i}.jpg`;
+        
+        const uploadResult = await Taro.cloud.uploadFile({
+          cloudPath,
+          filePath: tempFilePath
+        });
+        
+        uploadedImages.push(uploadResult.fileID);
+      }
 
-      console.log('保存日记数据：', diaryData);
-
-      // 模拟保存延迟
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      Taro.hideLoading();
-      Taro.showToast({
-        title: '保存成功',
-        icon: 'success'
+      // 2. 调用云函数保存日记
+      const result = await Taro.cloud.callFunction({
+        name: 'saveDiary',
+        data: {
+          datetime: datetime.toISOString(),
+          content,
+          images: uploadedImages,
+          mood,
+          weather,
+          category,
+          location
+        }
       });
 
-      // 延迟返回
-      setTimeout(() => {
-        Taro.navigateBack();
-      }, 1500);
+      Taro.hideLoading();
+
+      if (result.result.success) {
+        Taro.showToast({
+          title: '保存成功',
+          icon: 'success'
+        });
+
+        // 延迟返回
+        setTimeout(() => {
+          Taro.navigateBack();
+        }, 1500);
+      } else {
+        throw new Error(result.result.message);
+      }
 
     } catch (error) {
       Taro.hideLoading();
       Taro.showToast({
-        title: '保存失败',
+        title: '保存失败：' + error.message,
         icon: 'none'
       });
       console.error('保存失败', error);

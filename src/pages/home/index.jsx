@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro';
 import CalendarSection from '../../components/CalendarSection';
 import DiaryCard from '../../components/DiaryCard';
 import './index.less';
@@ -9,6 +9,7 @@ const Home = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [diaryList, setDiaryList] = useState([]);
   const [diaryDates, setDiaryDates] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // 添加加载状态
   
   // 模拟数据 - 后续替换为云开发数据
   const mockDiaryData = [
@@ -58,30 +59,53 @@ const Home = () => {
     loadDiaryList();
   }, [currentMonth]);
 
+  // 页面显示时刷新数据
+  useDidShow(() => {
+    loadDiaryList();
+  });
+
+  // 下拉刷新
+  usePullDownRefresh(async () => {
+    await loadDiaryList();
+    Taro.stopPullDownRefresh();
+  });
+
   // 加载日记列表
   const loadDiaryList = async () => {
+    // 防止重复请求
+    if (isLoading) return;
+    
     try {
-      // TODO: 后续替换为云开发接口
-      // const res = await Taro.cloud.callFunction({
-      //   name: 'getDiaryList',
-      //   data: {
-      //     year: currentMonth.getFullYear(),
-      //     month: currentMonth.getMonth() + 1
-      //   }
-      // });
-      
-      // 使用模拟数据
-      setDiaryList(mockDiaryData);
-      
-      // 提取有日记的日期
-      const dates = mockDiaryData.map(item => item.date);
-      setDiaryDates([...new Set(dates)]);
+      setIsLoading(true);
+
+      // 调用云函数获取日记列表
+      const result = await Taro.cloud.callFunction({
+        name: 'getDiaryList',
+        data: {
+          year: currentMonth.getFullYear(),
+          month: currentMonth.getMonth() + 1
+        }
+      });
+
+      if (result.result.success) {
+        const diaryData = result.result.data;
+        setDiaryList(diaryData);
+        
+        // 提取有日记的日期
+        const dates = diaryData.map(item => item.date);
+        setDiaryDates([...new Set(dates)]);
+      } else {
+        throw new Error(result.result.message);
+      }
     } catch (error) {
       console.error('加载日记列表失败', error);
-      Taro.showToast({
-        title: '加载失败',
-        icon: 'none'
-      });
+      
+      // 如果加载失败，使用模拟数据
+      setDiaryList(mockDiaryData);
+      const dates = mockDiaryData.map(item => item.date);
+      setDiaryDates([...new Set(dates)]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
