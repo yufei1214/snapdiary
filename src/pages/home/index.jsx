@@ -18,7 +18,7 @@ const Home = () => {
       date: '2025-10-14',
       weekday: '周二',
       time: '13:48',
-      title: '欢迎宝来到每刻日记！！(*^▽^*) 让我们一起记录那些珍贵...',
+      title: '欢迎宝来到随影日记！！(*^▽^*) 让我们一起记录那些珍贵...',
       content: '',
       coverImage: '',
       tagIcon: '📝',
@@ -140,7 +140,7 @@ const Home = () => {
       {/* 顶部标题栏 */}
       <View className='page-header'>
         <View className='header-content'>
-          <Text className='header-title'>每刻日记</Text>
+          <Text className='header-title'>随影日记</Text>
           <View className='header-actions'>
             <View className='action-btn'>•••</View>
             <View className='action-btn'>⊙</View>
