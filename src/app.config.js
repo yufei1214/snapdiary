@@ -5,6 +5,7 @@ export default defineAppConfig({
     'pages/diary-edit/index',
     'pages/diary-detail/index',
     'pages/profile/index',
+    'pages/profile-edit/index',
   ],
 
   window: {

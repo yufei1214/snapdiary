@@ -55,7 +55,8 @@ const Profile = () => {
 
   // 更新头像昵称
   const handleUpdateProfile = () => {
-    Taro.getUserProfile({
+    Taro.navigateTo({ url: '/pages/profile-edit/index' });
+    /* Taro.getUserProfile({
       desc: '用于完善用户资料',
       success: async (res) => {
         const { avatarUrl, nickName } = res.userInfo;
@@ -93,7 +94,7 @@ const Profile = () => {
           icon: 'none'
         });
       }
-    });
+    }); */
   };
 
   // 往年今日
