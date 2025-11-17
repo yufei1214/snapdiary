@@ -1,0 +1,14 @@
+{
+  "name": "getDiaryListByDateRange",
+  "version": "1.0.0",
+  "description": "Cloud function to get diary list by date range",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

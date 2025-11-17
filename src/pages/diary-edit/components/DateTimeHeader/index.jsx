@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Picker } from '@tarojs/components';
 import Taro from '@tarojs/taro';
+import { Lunar, Solar } from 'lunar-javascript';
 import './index.less';
 
 const DateTimeHeader = ({ 
@@ -59,10 +60,31 @@ const DateTimeHeader = ({
     return weekdays[date.getDay()];
   };
 
-  // 获取农历信息（简化版，实际需要专门的农历库）
+  // 获取农历信息
   const getLunarDate = () => {
-    // TODO: 接入真实的农历转换库
-    return '乙巳蛇年 八月廿三';
+    console.log('获取农历信息的日期：', datetime);
+    
+    try {
+      // 将 Date 对象转换为 Solar 对象
+      const solar = Solar.fromDate(datetime);
+      // 转换为农历
+      const lunar = solar.getLunar();
+      
+      // 获取天干地支年份（如：乙巳蛇年）
+      const yearInGanZhi = lunar.getYearInGanZhi(); // 乙巳
+      const yearShengXiao = lunar.getYearShengXiao(); // 蛇
+      
+      // 获取农历月份（如：八月）
+      const monthInChinese = lunar.getMonthInChinese();
+      
+      // 获取农历日期（如：廿三）
+      const dayInChinese = lunar.getDayInChinese();
+      
+      return `${yearInGanZhi}${yearShengXiao}年 ${monthInChinese}月${dayInChinese}`;
+    } catch (error) {
+      console.error('农历转换失败:', error);
+      return '农历加载中...';
+    }
   };
 
   // 选择心情

@@ -3,7 +3,7 @@ import { View, Text } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import './index.less';
 
-const CalendarSection = ({ currentMonth, onMonthChange, onDateClick, diaryDates = [] }) => {
+const CalendarSection = ({ currentMonth, onMonthChange, onDateClick, diaryDates = [], selectedDate }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // 获取当前月份信息
@@ -28,8 +28,11 @@ const CalendarSection = ({ currentMonth, onMonthChange, onDateClick, diaryDates 
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     
-    // 补充空白天数
-    for (let i = 0; i < firstDayOfWeek; i++) {
+    // 补充空白天数（调整为周一开始）
+    // firstDayOfWeek: 0=周日, 1=周一, ..., 6=周六
+    // 转换为: 周日=6个空格, 周一=0个空格, 周二=1个空格...
+    const emptyDays = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+    for (let i = 0; i < emptyDays; i++) {
       days.push({ date: null, isEmpty: true });
     }
     
@@ -88,9 +91,20 @@ const CalendarSection = ({ currentMonth, onMonthChange, onDateClick, diaryDates 
 
   // 点击日期
   const handleDateClick = (day) => {
-    if (!day.isEmpty) {
-      onDateClick && onDateClick(day.dateStr);
+    if (day.isEmpty) return;
+    
+    // 检查是否是今天或之前的日期
+    const clickedDate = new Date(day.dateStr);
+    clickedDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (clickedDate > today) {
+      // 不处理未来日期的点击
+      console.log('不能选择未来日期');
+      return;
     }
+    
+    onDateClick && onDateClick(day.dateStr);
   };
 
   // 渲染星期标题
@@ -116,6 +130,24 @@ const CalendarSection = ({ currentMonth, onMonthChange, onDateClick, diaryDates 
     const classNames = ['day-item'];
     if (day.isToday) classNames.push('day-today');
     if (day.hasDiary) classNames.push('day-has-diary');
+    
+    // 新增：选中状态
+    if (selectedDate === day.dateStr) {
+      classNames.push('day-selected');
+    }
+    
+    // 新增：判断是否是未来日期
+    // 新增：判断是否是未来日期（只有明天及以后才算未来）
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const currentDate = new Date(day.dateStr);
+    currentDate.setHours(0, 0, 0, 0); // 也要清零时间
+    const isFuture = currentDate > today;
+
+    
+    if (isFuture) {
+      classNames.push('day-disabled');
+    }
 
     return (
       <View 

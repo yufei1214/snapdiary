@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Textarea, ScrollView } from '@tarojs/components';
-import Taro from '@tarojs/taro';
+import Taro, { useLoad }  from '@tarojs/taro';
 import DateTimeHeader from './components/DateTimeHeader';
 import ImageUploader from './components/ImageUploader';
 import './index.less';
@@ -16,6 +16,14 @@ const DiaryEdit = () => {
   const [wordCount, setWordCount] = useState(0);
   const [autoSaving, setAutoSaving] = useState(false);
 
+  // 接收路由参数（从首页传来的日期）
+  useLoad((options) => {
+    if (options.date) {
+      // 将字符串日期转换为 Date 对象
+      setDatetime(new Date(options.date));
+      console.log('接收到日期参数:', options.date);
+    }
+  });
   // 监听内容变化，更新字数
   useEffect(() => {
     setWordCount(content.length);

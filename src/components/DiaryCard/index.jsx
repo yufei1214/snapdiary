@@ -56,7 +56,7 @@ const DiaryCard = ({
       {/* 中间内容 */}
       <View className='card-center'>
         <View className='card-content'>
-          <Text className='card-title'>{title}</Text>
+          {/* <Text className='card-title'>{title}</Text> */}
           {content && (
             <Text className='card-preview'>{content}</Text>
           )}

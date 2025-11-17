@@ -10,7 +10,9 @@ const Home = () => {
   const [diaryList, setDiaryList] = useState([]);
   const [diaryDates, setDiaryDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // 添加加载状态
-  
+  const [selectedDate, setSelectedDate] = useState(null); // 选中的日期
+  const [isToday, setIsToday] = useState(true); // 选中的日期是否为今天
+
   // 模拟数据 - 后续替换为云开发数据
   const mockDiaryData = [
     {
@@ -56,22 +58,22 @@ const Home = () => {
 
   // 初始化数据
   useEffect(() => {
-    loadDiaryList();
+    loadDiaryList(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
   }, [currentMonth]);
 
   // 页面显示时刷新数据
   useDidShow(() => {
-    loadDiaryList();
+    loadDiaryList(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
   });
 
   // 下拉刷新
   usePullDownRefresh(async () => {
-    await loadDiaryList();
+    await loadDiaryList(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
     Taro.stopPullDownRefresh();
   });
 
   // 加载日记列表
-  const loadDiaryList = async () => {
+  const loadDiaryList = async (year, month) => {
     // 防止重复请求
     if (isLoading) return;
     
@@ -82,8 +84,8 @@ const Home = () => {
       const result = await Taro.cloud.callFunction({
         name: 'getDiaryList',
         data: {
-          year: currentMonth.getFullYear(),
-          month: currentMonth.getMonth() + 1
+          year: year,
+          month: month
         }
       });
 
@@ -117,9 +119,29 @@ const Home = () => {
   // 日期点击
   const handleDateClick = (dateStr) => {
     console.log('点击日期：', dateStr);
-    // TODO: 可以实现跳转到该日期的日记详情
-  };
+    
+    // 检查是否是今天或之前的日期
+    const clickedDate = new Date(dateStr);
+    clickedDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
+    clickedDate.getTime() === today.getTime() ? setIsToday(true) : setIsToday(false);
+
+    if (clickedDate > today) {
+      Taro.showToast({
+        title: '不能选择未来日期',
+        icon: 'none'
+      });
+      return;
+    }
+    
+    // 设置选中日期
+    setSelectedDate(dateStr);
+    
+    // 加载该月的日记
+    loadDiaryList(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
+  };
   // 日记卡片点击
   const handleDiaryClick = (diary) => {
     console.log('点击日记：', diary);
@@ -130,8 +152,13 @@ const Home = () => {
 
   // 写日记按钮点击
   const handleWriteDiary = () => {
+    // 如果有选中日期，传递给编辑页面
+    const url = isToday 
+      ? '/pages/diary-edit/index'
+      : `/pages/diary-edit/index?date=${selectedDate}`;
+    
     Taro.navigateTo({
-      url: '/pages/diary-edit/index'
+      url
     });
   };
 
@@ -149,8 +176,8 @@ const Home = () => {
         
         {/* 金句卡片 */}
         <View className='quote-card'>
-          <Text className='quote-text'>等待有时，是另一种行动。⏳</Text>
-          <View className='quote-like'>♡</View>
+          <Text className='quote-text'>正经人谁写日记啊</Text>
+          {/* <View className='quote-like'>♡</View> */}
         </View>
       </View>
 
@@ -160,6 +187,7 @@ const Home = () => {
         onMonthChange={handleMonthChange}
         onDateClick={handleDateClick}
         diaryDates={diaryDates}
+        selectedDate={selectedDate}  // 新增
       />
 
       {/* 日记列表 */}
@@ -191,7 +219,9 @@ const Home = () => {
       <View className='write-btn-wrapper'>
         <View className='write-btn' onClick={handleWriteDiary}>
           <Text className='write-btn-icon'>✏️</Text>
-          <Text className='write-btn-text'>记录此刻</Text>
+          <Text className='write-btn-text'>
+            {isToday ? '记录此刻' : '记录彼时'}
+          </Text>
         </View>
       </View>
     </View>
