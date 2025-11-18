@@ -21,19 +21,19 @@ export default defineAppConfig({
       pagePath: 'pages/home/index',
       text: '随记',
       iconPath: 'assets/icons/menu_album.png',
-      selectedIconPath: 'assets/icons/menu_album_active.png'
+      selectedIconPath: 'assets/icons/menu_album_actived.png'
     },
     /* {
       pagePath: 'pages/data/index',
       text: '数据',
       iconPath: 'assets/icons/data.png',
-      selectedIconPath: 'assets/icons/data_actived.png'
+      selectedIconPath: 'assets/icons/menu_data_actived.png'
     }, */
     {
       pagePath: 'pages/profile/index',
       text: '我的',
       iconPath: 'assets/icons/menu_mine.png',
-      selectedIconPath: 'assets/icons/menu_mine_active.png'
+      selectedIconPath: 'assets/icons/menu_mine_actived.png'
     }]
 
   }

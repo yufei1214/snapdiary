@@ -3,10 +3,12 @@ import { View, Text, Textarea, ScrollView } from '@tarojs/components';
 import Taro, { useLoad }  from '@tarojs/taro';
 import DateTimeHeader from './components/DateTimeHeader';
 import ImageUploader from './components/ImageUploader';
+import CustomNavBar from '@/components/CustomNavBar'
 import './index.less';
 
 const DiaryEdit = () => {
   const [datetime, setDatetime] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null); // 接收路由传入的日期
   const [mood, setMood] = useState(null);
   const [weather, setWeather] = useState(null);
   const [content, setContent] = useState('');
@@ -18,11 +20,14 @@ const DiaryEdit = () => {
 
   // 接收路由参数（从首页传来的日期）
   useLoad((options) => {
-    if (options.date) {
+    setSelectedDate(options.selectedDate || null);
+    // console.log('selectedDate:', options);
+    if (options.selectedDate) {
       // 将字符串日期转换为 Date 对象
-      setDatetime(new Date(options.date));
-      console.log('接收到日期参数:', options.date);
+      setDatetime(new Date(options.selectedDate));
+      // console.log('接收到日期参数:', options.selectedDate);
     }
+    
   });
   // 监听内容变化，更新字数
   useEffect(() => {
@@ -171,8 +176,10 @@ const DiaryEdit = () => {
 
   return (
     <View className='diary-edit-page'>
+      <CustomNavBar title={selectedDate ? "那天" : "今天"} onBack={handleBack} />
+      
       {/* 自定义导航栏 */}
-      <View className='custom-navbar'>
+      {/* <View className='custom-navbar'>
         <View className='navbar-content'>
           <View className='nav-left' onClick={handleBack}>
             <Text className='back-icon'>‹</Text>
@@ -183,7 +190,7 @@ const DiaryEdit = () => {
             <Text className='record-icon'>⊙</Text>
           </View>
         </View>
-      </View>
+      </View> */}
 
       <ScrollView 
         className='page-content'
@@ -205,7 +212,7 @@ const DiaryEdit = () => {
         <View className='content-section'>
           <Textarea
             className='content-input'
-            placeholder='写下今日感想、感恩、成长、快乐...'
+            placeholder='写下快乐、感想、成长...'
             placeholderClass='content-placeholder'
             value={content}
             onInput={(e) => setContent(e.detail.value)}

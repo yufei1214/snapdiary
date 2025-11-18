@@ -3,6 +3,7 @@ import { View, Text, ScrollView } from '@tarojs/components';
 import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro';
 import CalendarSection from '../../components/CalendarSection';
 import DiaryCard from '../../components/DiaryCard';
+import CustomNavBar from '@/components/CustomNavBar'
 import './index.less';
 
 const Home = () => {
@@ -152,10 +153,8 @@ const Home = () => {
 
   // 写日记按钮点击
   const handleWriteDiary = () => {
-    // 如果有选中日期，传递给编辑页面
-    const url = isToday 
-      ? '/pages/diary-edit/index'
-      : `/pages/diary-edit/index?date=${selectedDate}`;
+    // 如果有选中日期，传递给编辑页面（为什么不直接传带参数的，因为进来默认没选日期，selectedDate为null）
+    const url = isToday ? '/pages/diary-edit/index' : `/pages/diary-edit/index?selectedDate=${selectedDate}`;
     
     Taro.navigateTo({
       url
@@ -164,15 +163,16 @@ const Home = () => {
 
   return (
     <View className='home-page'>
+      <CustomNavBar title="随影日记" showBack={false} />
       {/* 顶部标题栏 */}
       <View className='page-header'>
-        <View className='header-content'>
+        {/* <View className='header-content'>
           <Text className='header-title'>随影日记</Text>
           <View className='header-actions'>
             <View className='action-btn'>•••</View>
             <View className='action-btn'>⊙</View>
           </View>
-        </View>
+        </View> */}
         
         {/* 金句卡片 */}
         <View className='quote-card'>
@@ -220,7 +220,7 @@ const Home = () => {
         <View className='write-btn' onClick={handleWriteDiary}>
           <Text className='write-btn-icon'>✏️</Text>
           <Text className='write-btn-text'>
-            {isToday ? '记录此刻' : '记录彼时'}
+            {isToday ? '记录此刻' : '写下回忆'}
           </Text>
         </View>
       </View>

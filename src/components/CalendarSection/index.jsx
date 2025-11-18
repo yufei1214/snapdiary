@@ -176,8 +176,8 @@ const CalendarSection = ({ currentMonth, onMonthChange, onDateClick, diaryDates 
             <Text className='arrow-icon'>›</Text>
           </View>
         </View>
-        
-        <Text className='view-all-text'>🔍 查看全部日记</Text>
+        {/* TODO: 查看全部日记 */}
+        {/* <Text className='view-all-text'>🔍 查看全部日记</Text> */}
       </View>
 
       {/* 日历主体 */}
