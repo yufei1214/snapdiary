@@ -1,0 +1,43 @@
+// 心情选项
+export const MOOD_LIST = [
+	{ emoji: '😊', label: '超开心' },
+  { emoji: '😎', label: '自信得意' },
+  { emoji: '😋', label: '心满意足' },
+  { emoji: '😌', label: '平静舒适' },
+  { emoji: '😍', label: '喜欢' },
+  { emoji: '🤩', label: '奋斗冲鸭' },
+  { emoji: '🤑', label: '发财啦' },
+  { emoji: '🤔', label: '期待' },
+  { emoji: '😫', label: '害羞' },
+  { emoji: '🥰', label: '亲亲' },
+  { emoji: '😘', label: '我真美' },
+  { emoji: '🤗', label: '棒棒哒' },
+  { emoji: '😵‍💫', label: '晕乎乎' },
+  { emoji: '😴', label: '困困了' },
+  { emoji: '😭', label: '泪眼汪汪' },
+  { emoji: '😞', label: '小难过' },
+  { emoji: '😫', label: '痛哭流涕' },
+  { emoji: '😑', label: '无语' },
+  { emoji: '💔', label: '裂开' },
+  { emoji: '🤯', label: '迷茫' },
+  { emoji: '😡', label: '生气气' },
+  { emoji: '💧', label: '有滴汗' },
+  { emoji: '😰', label: '尴尬' },
+  { emoji: '😱', label: '震惊' },
+  { emoji: '😟', label: '紧张' },
+  { emoji: '😨', label: '恐惧' },
+  { emoji: '🤢', label: '抓狂' },
+  { emoji: '🤮', label: 'yue了' },
+];
+
+  // 天气选项
+export const WEATHER_LIST = [
+	{ emoji: '☀️', label: '晴' },
+	{ emoji: '⛅', label: '多云' },
+	{ emoji: '☁️', label: '阴' },
+	{ emoji: '🌧️', label: '雨' },
+	{ emoji: '⛈️', label: '雷雨' },
+	{ emoji: '🌨️', label: '雪' },
+	{ emoji: '🌫️', label: '雾' },
+	{ emoji: '🌪️', label: '风' },
+];

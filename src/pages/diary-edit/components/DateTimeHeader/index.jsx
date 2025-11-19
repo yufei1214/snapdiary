@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Picker } from '@tarojs/components';
+// 1. 引入 useState 和 Image
+import { View, Text, Picker, Image } from '@tarojs/components';
 import Taro from '@tarojs/taro';
 import { Lunar, Solar } from 'lunar-javascript';
+
+// 2. 引入新组件和新数据
+import SelectionModal from '@/components/SelectionModal';
+import { MOOD_LIST, WEATHER_LIST } from '@/constants/diary';
+
 import './index.less';
 
 const DateTimeHeader = ({ 
@@ -12,32 +18,21 @@ const DateTimeHeader = ({
   onMoodChange,
   onWeatherChange 
 }) => {
-  // 心情选项
-  const moodOptions = [
-    { emoji: '😊', label: '开心' },
-    { emoji: '😢', label: '难过' },
-    { emoji: '😡', label: '生气' },
-    { emoji: '😰', label: '焦虑' },
-    { emoji: '😴', label: '困倦' },
-    { emoji: '🤔', label: '思考' },
-    { emoji: '😎', label: '酷' },
-    { emoji: '🥰', label: '爱' },
-  ];
+  console.log(datetime,
+  mood,
+  weather,
+  onDateTimeChange,
+  onMoodChange,
+  onWeatherChange )
+  // 3. 移除旧的 moodOptions 和 weatherOptions 数组
 
-  // 天气选项
-  const weatherOptions = [
-    { emoji: '☀️', label: '晴' },
-    { emoji: '⛅', label: '多云' },
-    { emoji: '☁️', label: '阴' },
-    { emoji: '🌧️', label: '雨' },
-    { emoji: '⛈️', label: '雷雨' },
-    { emoji: '🌨️', label: '雪' },
-    { emoji: '🌫️', label: '雾' },
-    { emoji: '🌪️', label: '风' },
-  ];
+  // 4. 添加弹窗的显示状态
+  const [moodModalVisible, setMoodModalVisible] = useState(false);
+  const [weatherModalVisible, setWeatherModalVisible] = useState(false);
 
-  // 格式化日期显示
+  // --- 原有的日期/农历方法 (保持不变) ---
   const formatDate = () => {
+    // ... (代码不变)
     const date = new Date(datetime);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -45,41 +40,30 @@ const DateTimeHeader = ({
     return `${year}-${month}-${day}`;
   };
 
-  // 格式化时间显示
   const formatTime = () => {
+    // ... (代码不变)
     const date = new Date(datetime);
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     return `${hours}:${minutes}`;
   };
 
-  // 获取星期
   const getWeekday = () => {
+    // ... (代码不变)
     const date = new Date(datetime);
     const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
     return weekdays[date.getDay()];
   };
 
-  // 获取农历信息
   const getLunarDate = () => {
-    console.log('获取农历信息的日期：', datetime);
-    
+    // ... (代码不变)
     try {
-      // 将 Date 对象转换为 Solar 对象
       const solar = Solar.fromDate(datetime);
-      // 转换为农历
       const lunar = solar.getLunar();
-      
-      // 获取天干地支年份（如：乙巳蛇年）
-      const yearInGanZhi = lunar.getYearInGanZhi(); // 乙巳
-      const yearShengXiao = lunar.getYearShengXiao(); // 蛇
-      
-      // 获取农历月份（如：八月）
+      const yearInGanZhi = lunar.getYearInGanZhi(); 
+      const yearShengXiao = lunar.getYearShengXiao();
       const monthInChinese = lunar.getMonthInChinese();
-      
-      // 获取农历日期（如：廿三）
       const dayInChinese = lunar.getDayInChinese();
-      
       return `${yearInGanZhi}${yearShengXiao}年 ${monthInChinese}月${dayInChinese}`;
     } catch (error) {
       console.error('农历转换失败:', error);
@@ -87,30 +71,9 @@ const DateTimeHeader = ({
     }
   };
 
-  // 选择心情
-  const handleMoodClick = () => {
-    Taro.showActionSheet({
-      itemList: moodOptions.map(item => `${item.emoji} ${item.label}`),
-      success: (res) => {
-        const selectedMood = moodOptions[res.tapIndex];
-        onMoodChange && onMoodChange(selectedMood);
-      }
-    });
-  };
-
-  // 选择天气
-  const handleWeatherClick = () => {
-    Taro.showActionSheet({
-      itemList: weatherOptions.map(item => `${item.emoji} ${item.label}`),
-      success: (res) => {
-        const selectedWeather = weatherOptions[res.tapIndex];
-        onWeatherChange && onWeatherChange(selectedWeather);
-      }
-    });
-  };
-
-  // 修改时间
+  // 时间修改
   const handleTimeChange = (e) => {
+    // ... (代码不变)
     const timeStr = e.detail.value;
     const [hours, minutes] = timeStr.split(':');
     const newDate = new Date(datetime);
@@ -121,6 +84,7 @@ const DateTimeHeader = ({
 
   // 修改日期
   const handleDateChange = (e) => {
+    // ... (代码不变)
     const dateStr = e.detail.value;
     const newDate = new Date(dateStr);
     const oldDate = new Date(datetime);
@@ -129,9 +93,34 @@ const DateTimeHeader = ({
     onDateTimeChange && onDateTimeChange(newDate);
   };
 
+  // --- 5. 更新点击事件 ---
+  const handleMoodClick = () => {
+    setMoodModalVisible(true); // 不再调用 showActionSheet
+  };
+
+  const handleWeatherClick = () => {
+    setWeatherModalVisible(true); // 不再调用 showActionSheet
+  };
+
+  // --- 6. 为 Modal 添加确认事件 ---
+  const handleMoodConfirm = (selectedItem) => {
+    if (selectedItem) {
+      onMoodChange && onMoodChange(selectedItem);
+    }
+    setMoodModalVisible(false);
+  };
+
+  const handleWeatherConfirm = (selectedItem) => {
+    if (selectedItem) {
+      onWeatherChange && onWeatherChange(selectedItem);
+    }
+    setWeatherModalVisible(false);
+  };
+
+
   return (
     <View className='datetime-header'>
-      {/* 日期时间行 */}
+      {/* 日期时间行 (代码不变) */}
       <View className='datetime-row'>
         <Picker 
           mode='date' 
@@ -151,7 +140,7 @@ const DateTimeHeader = ({
           </View>
         </Picker>
 
-        {/* 心情和天气按钮 */}
+        {/* --- 7. 修改按钮区域 --- */}
         <View className='action-buttons'>
           <View className='action-btn' onClick={handleMoodClick}>
             <Text className='action-icon'>{mood ? mood.emoji : '♡'}</Text>
@@ -164,10 +153,31 @@ const DateTimeHeader = ({
         </View>
       </View>
 
-      {/* 农历信息 */}
+      {/* 农历信息 (代码不变) */}
       <View className='lunar-row'>
         <Text className='lunar-text'>{getLunarDate()}</Text>
       </View>
+
+      {/* --- 8. 添加弹窗组件 --- */}
+      <SelectionModal
+        visible={moodModalVisible}
+        title='现在的心情怎么样'
+        items={MOOD_LIST} // 使用你截图对应的完整列表
+        columns={5} // 按照你的截图，心情是5列
+        selected={mood}
+        onClose={() => setMoodModalVisible(false)}
+        onConfirm={handleMoodConfirm}
+      />
+
+      <SelectionModal
+        visible={weatherModalVisible}
+        title='今天的天气怎么样'
+        items={WEATHER_LIST} // 使用你截图对应的完整列表
+        columns={4} // 按照你的截图，天气是4列
+        selected={weather}
+        onClose={() => setWeatherModalVisible(false)}
+        onConfirm={handleWeatherConfirm}
+      />
     </View>
   );
 };

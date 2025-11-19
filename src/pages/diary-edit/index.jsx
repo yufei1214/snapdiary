@@ -4,13 +4,14 @@ import Taro, { useLoad }  from '@tarojs/taro';
 import DateTimeHeader from './components/DateTimeHeader';
 import ImageUploader from './components/ImageUploader';
 import CustomNavBar from '@/components/CustomNavBar'
+import { MOOD_LIST, WEATHER_LIST } from '@/constants/diary';
 import './index.less';
 
 const DiaryEdit = () => {
   const [datetime, setDatetime] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null); // 接收路由传入的日期
-  const [mood, setMood] = useState(null);
-  const [weather, setWeather] = useState(null);
+  const [mood, setMood] = useState(MOOD_LIST[0]);
+  const [weather, setWeather] = useState(WEATHER_LIST[0]);
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [category, setCategory] = useState(null);
@@ -234,7 +235,8 @@ const DiaryEdit = () => {
         {/* 底部操作区域 */}
         <View className='bottom-actions'>
           {/* 功能按钮行 */}
-          <View className='action-row'>
+          {/* TODO */}
+          {/* <View className='action-row'>
             <View className='action-item' onClick={handleSelectCategory}>
               <Text className='action-item-icon'>#</Text>
               <Text className='action-item-text'>
@@ -256,7 +258,7 @@ const DiaryEdit = () => {
               </Text>
               <Text className='action-item-arrow'>›</Text>
             </View>
-          </View>
+          </View> */}
 
           {/* 字数统计和其他信息 */}
           <View className='info-row'>
@@ -264,10 +266,11 @@ const DiaryEdit = () => {
               <Text className='info-icon'>🕐</Text>
               <Text className='info-text'>字数: {wordCount}</Text>
             </View>
-            <View className='info-item voice-input'>
+            {/* TODO */}
+            {/* <View className='info-item voice-input'>
               <Text className='voice-icon'>🎤</Text>
               <Text className='voice-text'>语音识别</Text>
-            </View>
+            </View> */}
           </View>
         </View>
 
@@ -280,9 +283,10 @@ const DiaryEdit = () => {
         <View className='save-btn' onClick={handleSave}>
           <Text className='save-btn-text'>保存</Text>
         </View>
-        <View className='faq-link'>
+            {/* TODO */}
+        {/* <View className='faq-link'>
           <Text className='faq-text'>❓常见问题</Text>
-        </View>
+        </View> */}
       </View>
     </View>
   );
