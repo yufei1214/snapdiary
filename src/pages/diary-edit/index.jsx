@@ -5,6 +5,7 @@ import DateTimeHeader from './components/DateTimeHeader';
 import ImageUploader from './components/ImageUploader';
 import CustomNavBar from '@/components/CustomNavBar'
 import { MOOD_LIST, WEATHER_LIST } from '@/constants/diary';
+import SelectionModal from '@/components/SelectionModal';
 import './index.less';
 
 const DiaryEdit = () => {
@@ -18,18 +19,20 @@ const DiaryEdit = () => {
   const [location, setLocation] = useState(null);
   const [wordCount, setWordCount] = useState(0);
   const [autoSaving, setAutoSaving] = useState(false);
+  // 子组件中的状态声在此处，是因为在选择心情和天气时会发生原生组件穿透问题，所以挪到父组件，当弹窗出现时禁用输入框
+  const [moodModalVisible, setMoodModalVisible] = useState(false);
+  const [weatherModalVisible, setWeatherModalVisible] = useState(false);
 
   // 接收路由参数（从首页传来的日期）
   useLoad((options) => {
     setSelectedDate(options.selectedDate || null);
-    // console.log('selectedDate:', options);
     if (options.selectedDate) {
       // 将字符串日期转换为 Date 对象
       setDatetime(new Date(options.selectedDate));
-      // console.log('接收到日期参数:', options.selectedDate);
     }
     
   });
+
   // 监听内容变化，更新字数
   useEffect(() => {
     setWordCount(content.length);
@@ -42,7 +45,6 @@ const DiaryEdit = () => {
         handleAutoSave();
       }
     }, 3000); // 3秒后自动保存
-
     return () => clearTimeout(timer);
   }, [content, images, mood, weather, category, location]);
 
@@ -104,7 +106,7 @@ const DiaryEdit = () => {
     Taro.showLoading({ title: '保存中...' });
 
     try {
-      // 1. 上传图片到云存储
+      // 上传图片到云存储
       const uploadedImages = [];
       for (let i = 0; i < images.length; i++) {
         const tempFilePath = images[i];
@@ -118,7 +120,7 @@ const DiaryEdit = () => {
         uploadedImages.push(uploadResult.fileID);
       }
 
-      // 2. 调用云函数保存日记
+      // 调用云函数保存日记
       const result = await Taro.cloud.callFunction({
         name: 'saveDiary',
         data: {
@@ -175,6 +177,23 @@ const DiaryEdit = () => {
     }
   };
 
+  // 弹窗确认处理函数
+  const handleMoodConfirm = (selectedItem) => {
+    if (selectedItem) {
+      setMood(selectedItem);
+    }
+    setMoodModalVisible(false);
+  };
+
+  const handleWeatherConfirm = (selectedItem) => {
+    if (selectedItem) {
+      setWeather(selectedItem);
+    }
+    setWeatherModalVisible(false);
+  };
+  // 判断是否有 Modal 打开 (用于禁用 Textarea)
+  const isModalOpen = moodModalVisible || weatherModalVisible;
+
   return (
     <View className='diary-edit-page'>
       <CustomNavBar title={selectedDate ? "那天" : "今天"} onBack={handleBack} />
@@ -207,6 +226,8 @@ const DiaryEdit = () => {
           onDateTimeChange={setDatetime}
           onMoodChange={setMood}
           onWeatherChange={setWeather}
+          onMoodClick={() => setMoodModalVisible(true)} 
+          onWeatherClick={() => setWeatherModalVisible(true)}
         />
 
         {/* 内容输入区域 */}
@@ -219,6 +240,8 @@ const DiaryEdit = () => {
             onInput={(e) => setContent(e.detail.value)}
             autoHeight
             maxlength={-1}
+            // 当任意 Modal 打开时，禁用 Textarea
+            disabled={isModalOpen}
           />
           
           {autoSaving && (
@@ -277,6 +300,26 @@ const DiaryEdit = () => {
         {/* 底部占位 */}
         <View className='bottom-placeholder' />
       </ScrollView>
+
+      <SelectionModal
+        visible={moodModalVisible}
+        title='现在的心情怎么样'
+        items={MOOD_LIST} 
+        columns={5} 
+        selected={mood}
+        onClose={() => setMoodModalVisible(false)}
+        onConfirm={handleMoodConfirm}
+      />
+
+      <SelectionModal
+        visible={weatherModalVisible}
+        title='今天的天气怎么样'
+        items={WEATHER_LIST} 
+        columns={4} 
+        selected={weather}
+        onClose={() => setWeatherModalVisible(false)}
+        onConfirm={handleWeatherConfirm}
+      />
 
       {/* 保存按钮 */}
       <View className='save-btn-wrapper'>
