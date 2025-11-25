@@ -7,14 +7,17 @@ import CustomNavBar from '@/components/CustomNavBar'
 import './index.less';
 
 const Home = () => {
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [diaryList, setDiaryList] = useState([]);
   const [diaryDates, setDiaryDates] = useState([]);
   const [isLoading, setIsLoading] = useState(false); // 添加加载状态
-  const [selectedDate, setSelectedDate] = useState(null); // 选中的日期
+  const [selectedDate, setSelectedDate] = useState(todayStr); // 选中的日期 2025-11-24
   const [isToday, setIsToday] = useState(true); // 选中的日期是否为今天
 
-  // 模拟数据 - 后续替换为云开发数据
+  /* // 模拟数据 - 后续替换为云开发数据
   const mockDiaryData = [
     {
       id: '1',
@@ -55,7 +58,7 @@ const Home = () => {
       tagText: '温馨提示',
       isStarred: true,
     },
-  ];
+  ]; */
 
   // 初始化数据
   useEffect(() => {
@@ -102,11 +105,11 @@ const Home = () => {
       }
     } catch (error) {
       console.error('加载日记列表失败', error);
-      
+      /* 
       // 如果加载失败，使用模拟数据
       setDiaryList(mockDiaryData);
       const dates = mockDiaryData.map(item => item.date);
-      setDiaryDates([...new Set(dates)]);
+      setDiaryDates([...new Set(dates)]); */
     } finally {
       setIsLoading(false);
     }
@@ -153,14 +156,18 @@ const Home = () => {
 
   // 写日记按钮点击
   const handleWriteDiary = () => {
-    // 如果有选中日期，传递给编辑页面（为什么不直接传带参数的，因为进来默认没选日期，selectedDate为null）
-    const url = isToday ? '/pages/diary-edit/index' : `/pages/diary-edit/index?selectedDate=${selectedDate}`;
+    const url = `/pages/diary-edit/index?selectedDate=${selectedDate}`;
     
     Taro.navigateTo({
       url
     });
   };
-
+  // 判断选中日期是否有日记
+  const selectedDateHasDiary = () => {
+    console.log('selectedDate', selectedDate);
+    if (!selectedDate) return false;
+    return diaryDates.includes(selectedDate);
+  };
   return (
     <View className='home-page'>
       <CustomNavBar title="随影日记" showBack={false} />
@@ -220,7 +227,7 @@ const Home = () => {
         <View className='write-btn' onClick={handleWriteDiary}>
           <Text className='write-btn-icon'>✏️</Text>
           <Text className='write-btn-text'>
-            {isToday ? '记录此刻' : '写下回忆'}
+            {selectedDateHasDiary() ? '再写一篇' : isToday ? '记录此刻' : '写下回忆'}
           </Text>
         </View>
       </View>

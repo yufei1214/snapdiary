@@ -16,12 +16,12 @@ const DateTimeHeader = ({
   onMoodClick, 
   onWeatherClick
 }) => {
-  console.log(datetime,
+  /* console.log(datetime,
   mood,
   weather,
   onDateTimeChange,
   onMoodChange,
-  onWeatherChange )
+  onWeatherChange ) */
 
   const [moodModalVisible, setMoodModalVisible] = useState(false);
   const [weatherModalVisible, setWeatherModalVisible] = useState(false);

@@ -192,7 +192,7 @@ const CalendarSection = ({ currentMonth, onMonthChange, onDateClick, diaryDates 
 
         {/* 展开/收起提示 */}
         <View className='calendar-expand-info'>
-          <Text className='expand-text'>本周{diaryDates.length}篇日记</Text>
+          <Text className='expand-text'>本月{diaryDates.length}篇日记</Text>
           <View className='expand-btn' onClick={toggleExpand}>
             <Text className='expand-btn-text'>{isExpanded ? '收起' : '展开'}</Text>
           </View>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
+import CustomNavBar from '@/components/CustomNavBar'
 import './index.less';
 
 const DiaryDetail = () => {
@@ -181,8 +182,9 @@ const DiaryDetail = () => {
 
   return (
     <View className='diary-detail-page'>
+      <CustomNavBar title='详情' onBack={handleBack} />
       {/* 自定义导航栏 */}
-      <View className='custom-navbar'>
+      {/* <View className='custom-navbar'>
         <View className='navbar-content'>
           <View className='nav-left' onClick={handleBack}>
             <Text className='back-icon'>‹</Text>
@@ -193,7 +195,7 @@ const DiaryDetail = () => {
             <Text className='record-icon'>⊙</Text>
           </View>
         </View>
-      </View>
+      </View> */}
 
       <ScrollView 
         className='page-content'

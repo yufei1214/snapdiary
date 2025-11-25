@@ -33,6 +33,16 @@ const DiaryEdit = () => {
     
   });
 
+  // 判断选中日期是否是今天
+  const isToday = () => {
+    if (!selectedDate) return true; // 没有传入日期，默认是今天
+    
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    
+    return selectedDate === todayStr;
+  };
+
   // 监听内容变化，更新字数
   useEffect(() => {
     setWordCount(content.length);
@@ -194,9 +204,24 @@ const DiaryEdit = () => {
   // 判断是否有 Modal 打开 (用于禁用 Textarea)
   const isModalOpen = moodModalVisible || weatherModalVisible;
 
+  // 计算日期差，用于title显示
+  const getDateTitle = () => {
+    if (!selectedDate || isToday()) return "今天";
+    
+    const selected = new Date(selectedDate);
+    const today = new Date();
+    const diffDays = Math.floor((today - selected) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return "昨天";
+    if (diffDays === 2) return "前天";
+    if (diffDays <= 7) return `${diffDays}天前`;
+    return selectedDate.slice(5).replace('-', '月') + '日';
+  };
+
   return (
     <View className='diary-edit-page'>
-      <CustomNavBar title={selectedDate ? "那天" : "今天"} onBack={handleBack} />
+      <CustomNavBar title={isToday() ? "今天" : "补记"} onBack={handleBack} /> {/* 回忆/往日 */}
+      {/* <CustomNavBar title={getDateTitle()} onBack={handleBack} /> */}
       
       {/* 自定义导航栏 */}
       {/* <View className='custom-navbar'>
