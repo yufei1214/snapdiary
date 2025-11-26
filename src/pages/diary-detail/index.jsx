@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView } from '@tarojs/components';
-import Taro, { useRouter } from '@tarojs/taro';
+import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import CustomNavBar from '@/components/CustomNavBar'
+import { Lunar, Solar } from 'lunar-javascript';
 import './index.less';
 
 const DiaryDetail = () => {
@@ -11,7 +12,7 @@ const DiaryDetail = () => {
   const [diary, setDiary] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useDidShow(() => {
     if (id) {
       loadDiaryDetail();
     }
@@ -59,15 +60,9 @@ const DiaryDetail = () => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  // 格式化时间显示
-  const formatTime = (dateStr) => {
-    const date = new Date(dateStr);
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${hours}:${minutes}`;
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
   // 获取星期
@@ -78,10 +73,24 @@ const DiaryDetail = () => {
   };
 
   // 获取农历（简化版）
-  const getLunarDate = () => {
-    return '乙巳蛇年 八月廿三';
-  };
+  /* const getLunarDate = () => {
+    return '乙巳蛇年 十月初三';
+  }; */
 
+  const getLunarDate = (datetime) => {
+    try {
+      const solar = Solar.fromDate(new Date(datetime));
+      const lunar = solar.getLunar();
+      const yearInGanZhi = lunar.getYearInGanZhi(); 
+      const yearShengXiao = lunar.getYearShengXiao();
+      const monthInChinese = lunar.getMonthInChinese();
+      const dayInChinese = lunar.getDayInChinese();
+      return `${yearInGanZhi}${yearShengXiao}年 ${monthInChinese}月${dayInChinese}`;
+    } catch (error) {
+      console.error('农历转换失败:', error);
+      return '农历加载中...';
+    }
+  };
   // 预览图片
   const handlePreviewImage = (index) => {
     Taro.previewImage({
@@ -91,7 +100,7 @@ const DiaryDetail = () => {
   };
 
   // 删除日记
-  const handleDelete = () => {
+  const deleteAction = () => {
     Taro.showModal({
       title: '确认删除',
       content: '删除后将无法恢复，确定要删除这篇日记吗？',
@@ -100,7 +109,6 @@ const DiaryDetail = () => {
           try {
             Taro.showLoading({ title: '删除中...' });
             
-            // 调用云函数删除
             const result = await Taro.cloud.callFunction({
               name: 'deleteDiary',
               data: { id }
@@ -143,21 +151,45 @@ const DiaryDetail = () => {
     });
   };
 
-  // 更多操作
-  const handleMore = () => {
+  // 分享
+  const handleShare = () => {
+    Taro.showToast({ 
+      title: '分享功能开发中', 
+      icon: 'none' 
+    });
+  };
+
+  // 点赞
+  const handleLike = () => {
+    Taro.showToast({ 
+      title: '点赞功能开发中', 
+      icon: 'none' 
+    });
+  };
+
+  // 收藏
+  const handleStar = () => {
+    Taro.showToast({ 
+      title: '收藏功能开发中', 
+      icon: 'none' 
+    });
+  };
+
+  // 有感
+  const handleComment = () => {
+    Taro.showToast({ 
+      title: '评论功能开发中', 
+      icon: 'none' 
+    });
+  };
+
+  // 删除
+  const handleDelete = () => {
     Taro.showActionSheet({
-      itemList: ['编辑', '删除', '分享'],
+      itemList: ['删除'],
       success: (res) => {
-        switch (res.tapIndex) {
-          case 0:
-            handleEdit();
-            break;
-          case 1:
-            handleDelete();
-            break;
-          case 2:
-            Taro.showToast({ title: '分享功能开发中', icon: 'none' });
-            break;
+        if (res.tapIndex === 0) {
+          deleteAction();
         }
       }
     });
@@ -183,19 +215,6 @@ const DiaryDetail = () => {
   return (
     <View className='diary-detail-page'>
       <CustomNavBar title='详情' onBack={handleBack} />
-      {/* 自定义导航栏 */}
-      {/* <View className='custom-navbar'>
-        <View className='navbar-content'>
-          <View className='nav-left' onClick={handleBack}>
-            <Text className='back-icon'>‹</Text>
-          </View>
-          <Text className='nav-title'>今天</Text>
-          <View className='nav-right'>
-            <Text className='more-icon' onClick={handleMore}>•••</Text>
-            <Text className='record-icon'>⊙</Text>
-          </View>
-        </View>
-      </View> */}
 
       <ScrollView 
         className='page-content'
@@ -203,35 +222,33 @@ const DiaryDetail = () => {
         enhanced
         showScrollbar={false}
       >
-        {/* 日期时间头部 */}
-        <View className='datetime-header'>
+        {/* 头部信息 */}
+        <View className='detail-header'>
+          {/* 日期时间 + 星期 */}
           <View className='datetime-row'>
-            <View className='datetime-main'>
-              <Text className='date-text'>{formatDate(diary.datetime)}</Text>
-              <Text className='time-text'>{formatTime(diary.datetime)}</Text>
-              <Text className='weekday-text'>{getWeekday(diary.datetime)}</Text>
-            </View>
-
-            {/* 心情和天气 */}
-            <View className='action-buttons'>
-              {diary.mood && (
-                <View className='action-btn'>
-                  <Text className='action-icon'>{diary.mood.emoji}</Text>
-                  <Text className='action-label'>心情</Text>
-                </View>
-              )}
-              {diary.weather && (
-                <View className='action-btn'>
-                  <Text className='action-icon'>{diary.weather.emoji}</Text>
-                  <Text className='action-label'>天气</Text>
-                </View>
-              )}
-            </View>
+            <Text className='datetime-text'>{formatDate(diary.datetime)}</Text>
+            <Text className='weekday-text'>{getWeekday(diary.datetime)}</Text>
           </View>
 
-          {/* 农历信息 */}
+          {/* 农历 */}
           <View className='lunar-row'>
-            <Text className='lunar-text'>{getLunarDate()}</Text>
+            <Text className='lunar-text'>{getLunarDate(diary.datetime)}</Text>
+          </View>
+
+          {/* 心情和天气 */}
+          <View className='mood-weather-row'>
+            {diary.mood && (
+              <View className='mood-weather-item'>
+                <Text className='emoji'>{diary.mood.emoji}</Text>
+                <Text className='label'>{diary.mood.label || '心情'}</Text>
+              </View>
+            )}
+            {diary.weather && (
+              <View className='mood-weather-item'>
+                <Text className='emoji'>{diary.weather.emoji}</Text>
+                <Text className='label'>{diary.weather.label || '天气'}</Text>
+              </View>
+            )}
           </View>
         </View>
 
@@ -265,40 +282,48 @@ const DiaryDetail = () => {
           </View>
         )}
 
-        {/* 位置信息 */}
-        {diary.location && (
-          <View className='location-section'>
-            <Text className='location-icon'>📍</Text>
-            <View className='location-info'>
-              <Text className='location-name'>{diary.location.name}</Text>
-              <Text className='location-address'>{diary.location.address}</Text>
-            </View>
-          </View>
-        )}
-
-        {/* 分类标签 */}
-        {diary.category && (
-          <View className='category-section'>
-            <View className='category-tag'>
-              <Text className='category-icon'>#</Text>
-              <Text className='category-text'>{diary.category}</Text>
-            </View>
-          </View>
-        )}
-
         {/* 底部信息 */}
         <View className='footer-info'>
-          <Text className='footer-text'>
-            字数: {diary.content ? diary.content.length : 0}
-          </Text>
-          <Text className='footer-text'>
-            创建于 {formatDate(diary.createTime || diary.datetime)}
-          </Text>
+          <Text className='footer-text'>字数: {diary.content ? diary.content.length : 0}</Text>
+          <Text className='footer-text'>创建于 {formatDate(diary.createTime || diary.datetime)}</Text>
         </View>
 
         {/* 底部占位 */}
         <View className='bottom-placeholder' />
       </ScrollView>
+
+      {/* 底部操作栏 */}
+      <View className='bottom-action-bar'>
+        <View className='action-item' onClick={handleShare}>
+          <Text className='action-icon'>🔗</Text>
+          <Text className='action-text'>分享</Text>
+        </View>
+        
+        <View className='action-item' onClick={handleLike}>
+          <Text className='action-icon'>❤️</Text>
+          <Text className='action-text'>赞</Text>
+        </View>
+        
+        <View className='action-item' onClick={handleStar}>
+          <Text className='action-icon'>⭐</Text>
+          <Text className='action-text'>星标</Text>
+        </View>
+        
+        <View className='action-item' onClick={handleComment}>
+          <Text className='action-icon'>💬</Text>
+          <Text className='action-text'>有感</Text>
+        </View>
+        
+        <View className='action-item' onClick={handleEdit}>
+          <Text className='action-icon'>✏️</Text>
+          <Text className='action-text'>编辑</Text>
+        </View>
+        
+        <View className='action-item' onClick={handleDelete}>
+          <Text className='action-icon'>🗑️</Text>
+          <Text className='action-text'>删除</Text>
+        </View>
+      </View>
     </View>
   );
 };

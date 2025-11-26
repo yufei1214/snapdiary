@@ -1,289 +1,200 @@
 .diary-detail-page {
+  width: 100%;
   min-height: 100vh;
-  background: #fff;
+  background: #f8f8f8;
 
   &.loading {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28rpx;
-    color: #999;
   }
 
-  // 自定义导航栏
-  .custom-navbar {
-    position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    border-bottom: 1rpx solid #f0f0f0;
-    z-index: 100;
-    padding-top: env(safe-area-inset-top);
-
-    .navbar-content {
-      height: 88rpx;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 32rpx;
-
-      .nav-left {
-        width: 80rpx;
-        
-        .back-icon {
-          font-size: 56rpx;
-          color: #333;
-          font-weight: 300;
-          line-height: 1;
-        }
-
-        &:active {
-          opacity: 0.6;
-        }
-      }
-
-      .nav-title {
-        flex: 1;
-        text-align: center;
-        font-size: 32rpx;
-        font-weight: 600;
-        color: #333;
-      }
-
-      .nav-right {
-        width: 80rpx;
-        display: flex;
-        justify-content: flex-end;
-        gap: 24rpx;
-
-        .more-icon,
-        .record-icon {
-          font-size: 32rpx;
-          color: #333;
-          
-          &:active {
-            opacity: 0.6;
-          }
-        }
-      }
-    }
-  }
-
-  // 页面内容
   .page-content {
-    height: calc(100vh - 88rpx - env(safe-area-inset-top));
+    height: calc(100vh - 120rpx);
+    background: #fff;
+  }
 
-    // 日期时间头部
-    .datetime-header {
-      padding: 32rpx 32rpx 24rpx;
-      border-bottom: 1rpx solid #f0f0f0;
+  // 头部信息区域
+  .detail-header {
+    padding: 40rpx 48rpx;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20rpx;
 
-      .datetime-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 16rpx;
-
-        .datetime-main {
-          display: flex;
-          align-items: baseline;
-          gap: 16rpx;
-
-          .date-text {
-            font-size: 32rpx;
-            font-weight: 600;
-            color: #333;
-          }
-
-          .time-text {
-            font-size: 32rpx;
-            font-weight: 600;
-            color: #333;
-          }
-
-          .weekday-text {
-            font-size: 28rpx;
-            color: #999;
-          }
-        }
-
-        .action-buttons {
-          display: flex;
-          gap: 24rpx;
-
-          .action-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8rpx;
-            padding: 8rpx 16rpx;
-            border-radius: 12rpx;
-            background: #f8f8f8;
-
-            .action-icon {
-              font-size: 36rpx;
-              line-height: 1;
-            }
-
-            .action-label {
-              font-size: 22rpx;
-              color: #666;
-            }
-          }
-        }
-      }
-
-      .lunar-row {
-        padding-left: 4rpx;
-
-        .lunar-text {
-          font-size: 24rpx;
-          color: #999;
-        }
-      }
-    }
-
-    // 日记内容
-    .content-section {
-      padding: 32rpx;
-      min-height: 300rpx;
-
-      .content-text {
-        font-size: 30rpx;
-        line-height: 1.8;
-        color: #333;
-        word-break: break-all;
-        white-space: pre-wrap;
-      }
-    }
-
-    // 图片展示
-    .images-section {
-      padding: 0 32rpx 32rpx;
-
-      .images-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16rpx;
-
-        .image-item {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 1;
-          border-radius: 12rpx;
-          overflow: hidden;
-          background: #f8f8f8;
-
-          .image {
-            width: 100%;
-            height: 100%;
-            display: block;
-          }
-
-          &:active {
-            opacity: 0.8;
-          }
-        }
-
-        // 单张图片 - 使用类名控制
-        &.images-grid-single {
-          grid-template-columns: 1fr;
-          
-          .image-item {
-            aspect-ratio: 16 / 9;
-            max-height: 500rpx;
-          }
-        }
-
-        // 两张图片 - 使用类名控制
-        &.images-grid-double {
-          grid-template-columns: repeat(2, 1fr);
-        }
-
-        // 四张图片 - 使用类名控制
-        &.images-grid-four {
-          grid-template-columns: repeat(2, 1fr);
-        }
-      }
-    }
-
-    // 位置信息
-    .location-section {
-      padding: 24rpx 32rpx;
+    // 日期时间 + 星期
+    .datetime-row {
       display: flex;
       align-items: center;
       gap: 16rpx;
-      background: #f8f8f8;
-      margin: 0 32rpx;
-      border-radius: 12rpx;
 
-      .location-icon {
+      .datetime-text {
         font-size: 32rpx;
+        font-weight: 500;
+        color: #333;
       }
 
-      .location-info {
-        flex: 1;
-
-        .location-name {
-          display: block;
-          font-size: 28rpx;
-          color: #333;
-          font-weight: 500;
-          margin-bottom: 4rpx;
-        }
-
-        .location-address {
-          display: block;
-          font-size: 24rpx;
-          color: #999;
-        }
+      .weekday-text {
+        font-size: 28rpx;
+        color: #666;
       }
     }
 
-    // 分类标签
-    .category-section {
-      padding: 24rpx 32rpx;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16rpx;
-
-      .category-tag {
-        display: flex;
-        align-items: center;
-        gap: 8rpx;
-        padding: 12rpx 24rpx;
-        background: #f0f8ff;
-        border-radius: 32rpx;
-
-        .category-icon {
-          font-size: 24rpx;
-          color: #1890ff;
-        }
-
-        .category-text {
-          font-size: 26rpx;
-          color: #1890ff;
-        }
-      }
-    }
-
-    // 底部信息
-    .footer-info {
-      padding: 32rpx;
-      display: flex;
-      justify-content: space-between;
-      border-top: 1rpx solid #f0f0f0;
-      margin-top: 32rpx;
-
-      .footer-text {
-        font-size: 24rpx;
+    // 农历
+    .lunar-row {
+      .lunar-text {
+        font-size: 28rpx;
         color: #999;
       }
     }
 
-    .bottom-placeholder {
-      height: 60rpx;
+    // 心情和天气
+    .mood-weather-row {
+      display: flex;
+      align-items: center;
+      gap: 40rpx;
+      // margin-top: 16rpx;
+
+      .mood-weather-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12rpx;
+
+        .emoji {
+          font-size: 46rpx;
+        }
+
+        .label {
+          font-size: 24rpx;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  // 内容区域
+  .content-section {
+    padding: 10rpx 48rpx 40rpx;
+    background: #fff;
+
+    .content-text {
+      font-size: 32rpx;
+      line-height: 1.8;
+      color: #333;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  }
+
+  // 图片展示区域
+  .images-section {
+    padding: 16rpx 48rpx 48rpx;
+    background: #fff;
+
+    .images-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16rpx;
+
+      &.images-grid-single {
+        grid-template-columns: 1fr;
+        
+        .image-item {
+          padding-top: 75%;
+        }
+      }
+
+      &.images-grid-double {
+        grid-template-columns: repeat(2, 1fr);
+        
+        .image-item {
+          padding-top: 100%;
+        }
+      }
+
+      &.images-grid-four {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .image-item {
+        position: relative;
+        width: 100%;
+        padding-top: 100%;
+        overflow: hidden;
+        border-radius: 16rpx;
+
+        .image {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  // 底部信息
+  .footer-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32rpx 48rpx 80rpx;
+    background: #fff;
+
+    .footer-text {
+      font-size: 24rpx;
+      color: #999;
+    }
+  }
+
+  // 底部占位
+  .bottom-placeholder {
+    height: 40rpx;
+  }
+
+  // 底部操作栏
+  .bottom-action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120rpx;
+    background: #fff;
+    border-top: 1rpx solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 16rpx;
+    z-index: 100;
+
+    .action-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8rpx;
+      padding: 16rpx;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:active {
+        opacity: 0.6;
+        transform: scale(0.95);
+      }
+
+      .action-icon {
+        font-size: 40rpx;
+        color: #333;
+      }
+
+      .action-text {
+        font-size: 22rpx;
+        color: #666;
+      }
     }
   }
 }

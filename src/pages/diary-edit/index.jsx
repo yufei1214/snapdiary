@@ -23,19 +23,28 @@ const DiaryEdit = () => {
   const [moodModalVisible, setMoodModalVisible] = useState(false);
   const [weatherModalVisible, setWeatherModalVisible] = useState(false);
 
+  const [isEditMode, setIsEditMode] = useState(false); // 是否是编辑模式
+  const [diaryId, setDiaryId] = useState(null); // 编辑的日记ID
+
   // 接收路由参数（从首页传来的日期）
   useLoad((options) => {
-    setSelectedDate(options.selectedDate || null);
-    if (options.selectedDate) {
-      // 将字符串日期转换为 Date 对象
-      setDatetime(new Date(options.selectedDate));
+    if(options.id) {
+      setIsEditMode(true);
+      setDiaryId(options.id);
+      loadDiaryDetail(options.id); // 加载数据
+    }else {
+      setSelectedDate(options.selectedDate || null);
+      if (options.selectedDate) {
+        // 将字符串日期转换为 Date 对象
+        setDatetime(new Date(options.selectedDate));
+      }
     }
     
   });
 
   // 判断选中日期是否是今天
   const isToday = () => {
-    if (!selectedDate) return true; // 没有传入日期，默认是今天
+    if (!selectedDate) return true; // 没有日期，默认是今天（正常都会由 query 传入）
     
     const today = new Date();
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
@@ -58,6 +67,54 @@ const DiaryEdit = () => {
     return () => clearTimeout(timer);
   }, [content, images, mood, weather, category, location]);
 
+
+  // 加载日记详情
+  const loadDiaryDetail = async (id) => {
+    try {
+      Taro.showLoading({ title: '加载中...' });
+      
+      const result = await Taro.cloud.callFunction({
+        name: 'getDiaryDetail',
+        data: { id }
+      });
+      
+      Taro.hideLoading();
+      
+      if (result.result.success) {
+        const diary = result.result.data;
+        
+        // 填充数据到表单
+        setDatetime(new Date(diary.datetime));
+        setContent(diary.content || '');
+        setImages(diary.images || []);
+        setMood(diary.mood || MOOD_LIST[0]);
+        setWeather(diary.weather || WEATHER_LIST[0]);
+        setCategory(diary.category || null);
+        setLocation(diary.location || null);
+        
+        // 设置 selectedDate（用于判断标题）
+        const date = new Date(diary.datetime);
+        const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        setSelectedDate(dateStr);
+        
+        console.log('日记详情加载成功:', diary);
+      } else {
+        throw new Error(result.result.message);
+      }
+    } catch (error) {
+      Taro.hideLoading();
+      console.error('加载日记详情失败', error);
+      Taro.showToast({
+        title: '加载失败',
+        icon: 'none'
+      });
+      
+      // 加载失败返回上一页
+      setTimeout(() => {
+        Taro.navigateBack();
+      }, 1500);
+    }
+  };
   // 自动保存草稿
   const handleAutoSave = () => {
     setAutoSaving(true);
@@ -116,7 +173,7 @@ const DiaryEdit = () => {
     Taro.showLoading({ title: '保存中...' });
 
     try {
-      // 上传图片到云存储
+      /* // 上传图片到云存储
       const uploadedImages = [];
       for (let i = 0; i < images.length; i++) {
         const tempFilePath = images[i];
@@ -128,12 +185,33 @@ const DiaryEdit = () => {
         });
         
         uploadedImages.push(uploadResult.fileID);
+      } */
+
+      // 处理图片：区分本地路径和云存储 fileID
+      const uploadedImages = [];
+      for (let i = 0; i < images.length; i++) {
+        const img = images[i];
+        
+        // 如果是云存储的 fileID（以 cloud:// 开头），直接使用
+        if (img.startsWith('cloud://')) {
+          uploadedImages.push(img);
+        } 
+        // 如果是本地临时路径，需要上传
+        else {
+          const cloudPath = `diary-images/${Date.now()}-${i}.jpg`;
+          const uploadResult = await Taro.cloud.uploadFile({
+            cloudPath,
+            filePath: img
+          });
+          uploadedImages.push(uploadResult.fileID);
+        }
       }
 
       // 调用云函数保存日记
       const result = await Taro.cloud.callFunction({
-        name: 'saveDiary',
+        name: isEditMode ? 'updateDiary' : 'saveDiary', // 根据模式调用不同云函数
         data: {
+          ...(isEditMode && { id: diaryId }), // 编辑模式需要传入 id
           datetime: datetime.toISOString(),
           content,
           images: uploadedImages,
@@ -220,7 +298,7 @@ const DiaryEdit = () => {
 
   return (
     <View className='diary-edit-page'>
-      <CustomNavBar title={isToday() ? "今天" : "补记"} onBack={handleBack} /> {/* 回忆/往日 */}
+      <CustomNavBar title={isEditMode? '编辑' : (isToday() ? "今天" : "补记")} onBack={handleBack} /> {/* 回忆/往日 */}
       {/* <CustomNavBar title={getDateTitle()} onBack={handleBack} /> */}
       
       {/* 自定义导航栏 */}
