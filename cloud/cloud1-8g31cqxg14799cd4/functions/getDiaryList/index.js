@@ -38,12 +38,15 @@ exports.main = async (event, context) => {
     const diaryList = result.data.map(diary => {
       const date = new Date(diary.datetime)
       const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+      // 转换为东八区时间
+      const chinaTime = new Date(date.getTime() + 8 * 60 * 60 * 1000);
       
       return {
         id: diary._id,
-        date: date.toISOString().split('T')[0],
-        weekday: weekdays[date.getDay()],
-        time: `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`,
+        datetime: diary.datetime, // 原始日期时间字符串
+        date: chinaTime.toISOString().split('T')[0],
+        weekday: weekdays[chinaTime.getUTCDay()],
+        time: `${String(chinaTime.getUTCHours()).padStart(2, '0')}:${String(chinaTime.getUTCMinutes()).padStart(2, '0')}`,
         title: diary.content.substring(0, 50) + (diary.content.length > 50 ? '...' : ''),
         content: diary.content.substring(0, 100),
         coverImage: diary.images && diary.images[0] ? diary.images[0] : '',

@@ -11,6 +11,7 @@ import './index.less';
 const DiaryEdit = () => {
   const [datetime, setDatetime] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null); // 接收路由传入的日期
+  const [diary, setDiary] = useState(null); // 编辑时的日记数据
   const [mood, setMood] = useState(MOOD_LIST[0]);
   const [weather, setWeather] = useState(WEATHER_LIST[0]);
   const [content, setContent] = useState('');
@@ -82,6 +83,7 @@ const DiaryEdit = () => {
       
       if (result.result.success) {
         const diary = result.result.data;
+        setDiary(diary);
         
         // 填充数据到表单
         setDatetime(new Date(diary.datetime));
@@ -159,6 +161,21 @@ const DiaryEdit = () => {
       console.error('选择位置失败', error);
     }
   };
+  /* 是“记录此刻”时,新增datetime字段用(new Date()).toISOString(),修改用diary.datetime;
+  是“写下回忆”时,新增datetime字段用 new Date(options.selectedDate).toISOString()；修改用diary.datetime */
+  const getDatetime = () => {
+    // 编辑模式，永远保持原时间
+    if (isEditMode) {
+      return diary.datetime;
+    }
+
+    // 新增模式
+    if (isToday()) {
+      return new Date().toISOString();  // 记录此刻
+    } else {
+      return new Date(selectedDate).toISOString(); // 写下回忆
+    }
+  }
 
   // 保存日记
   const handleSave = async () => {
@@ -173,20 +190,6 @@ const DiaryEdit = () => {
     Taro.showLoading({ title: '保存中...' });
 
     try {
-      /* // 上传图片到云存储
-      const uploadedImages = [];
-      for (let i = 0; i < images.length; i++) {
-        const tempFilePath = images[i];
-        const cloudPath = `diary-images/${Date.now()}-${i}.jpg`;
-        
-        const uploadResult = await Taro.cloud.uploadFile({
-          cloudPath,
-          filePath: tempFilePath
-        });
-        
-        uploadedImages.push(uploadResult.fileID);
-      } */
-
       // 处理图片：区分本地路径和云存储 fileID
       const uploadedImages = [];
       for (let i = 0; i < images.length; i++) {
@@ -212,7 +215,7 @@ const DiaryEdit = () => {
         name: isEditMode ? 'updateDiary' : 'saveDiary', // 根据模式调用不同云函数
         data: {
           ...(isEditMode && { id: diaryId }), // 编辑模式需要传入 id
-          datetime: datetime.toISOString(),
+          datetime: getDatetime(), // isEditMode&&diary ? diary.datetime : datetime.toISOString(),
           content,
           images: uploadedImages,
           mood,

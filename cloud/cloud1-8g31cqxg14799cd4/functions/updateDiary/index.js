@@ -10,6 +10,13 @@ exports.main = async (event) => {
   const wxContext = cloud.getWXContext();
   
   try {
+    // 数据验证
+    if (!content && (!images || images.length === 0)) {
+      return {
+        success: false,
+        message: '内容和图片不能同时为空'
+      }
+    }
     // 更新日记
     const result = await db.collection('diaries')
       .doc(id)
@@ -22,7 +29,7 @@ exports.main = async (event) => {
           weather,
           category,
           location,
-          updateTime: new Date().toISOString()
+          updateTime: db.serverDate()
         }
       });
     
