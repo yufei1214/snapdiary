@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Input, Button } from '@tarojs/components';
 import Taro, { useRouter } from '@tarojs/taro';
+import CustomNavBar from '@/components/CustomNavBar'
 import './index.less';
 
 const ProfileEdit = () => {
@@ -164,6 +165,7 @@ const ProfileEdit = () => {
 
         // 延迟返回，让用户看到成功提示
         setTimeout(() => {
+          console.log('保存成功，返回或执行回调', callback, Boolean(callback));
           if (callback) {
             callback();
           } else {
@@ -202,7 +204,9 @@ const ProfileEdit = () => {
   return (
     <View className='profile-edit-page'>
       {/* 自定义导航栏 */}
-      <View className='custom-navbar'>
+      <CustomNavBar title={"编辑资料"} onBack={handleBack} />
+      
+      {/* <View className='custom-navbar'>
         <View className='navbar-content'>
           <View className='nav-left' onClick={handleBack}>
             <Text className='back-icon'>‹</Text>
@@ -217,7 +221,7 @@ const ProfileEdit = () => {
             </Text>
           </View>
         </View>
-      </View>
+      </View> */}
 
       {/* 页面内容 */}
       <View className='page-content'>
@@ -258,9 +262,15 @@ const ProfileEdit = () => {
             </View>
           </View>
         </View>
+        {/* 保存按钮 */}
+        <View className='save-btn-wrapper'>
+          <View className='save-btn' onClick={() => handleSave(handleBack)}>
+            <Text className='save-btn-text'>保存</Text>
+          </View>
+        </View>
 
         {/* 提示信息 */}
-        <View className='tip-section'>
+        {/* <View className='tip-section'>
           <Text className='tip-text'>💡 点击头像可以获取微信头像和昵称</Text>
           <Text className='tip-text'>💡 昵称可以自定义修改，最多20个字符</Text>
           <Text className='tip-text'>💡 修改后点击右上角"保存"按钮</Text>
@@ -268,7 +278,7 @@ const ProfileEdit = () => {
           <Text className='tip-text'>📱 数据保存说明：</Text>
           <Text className='tip-text'>• 本地保存：打开速度快，离线可用</Text>
           <Text className='tip-text'>• 云端保存：永久存储，多设备同步</Text>
-        </View>
+        </View> */}
       </View>
     </View>
   );

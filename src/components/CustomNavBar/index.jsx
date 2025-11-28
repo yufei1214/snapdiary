@@ -41,7 +41,7 @@ const CustomNavBar = ({
 					{/* 左侧返回按钮 */}
 					{showBack && (
 						<View className='nav-left' onClick={handleBack}>
-							<Text className='back-icon'>&lsaquo;</Text>
+							<Text className='back-icon'>&lang;</Text>
 						</View>
 					)}
 					

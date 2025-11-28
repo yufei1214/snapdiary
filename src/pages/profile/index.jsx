@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, Button } from '@tarojs/components';
 import Taro, { useDidShow } from '@tarojs/taro';
+import CustomNavBar from '@/components/CustomNavBar'
 import './index.less';
 
 const Profile = () => {
@@ -164,15 +165,12 @@ const Profile = () => {
   return (
     <View className='profile-page'>
       {/* 顶部导航栏 */}
-      <View className='custom-navbar'>
+      <CustomNavBar title={"个人中心"}  showBack={false}/>
+      {/* <View className='custom-navbar'>
         <View className='navbar-content'>
           <Text className='nav-title'>个人中心</Text>
-          {/* <View className='nav-right'>
-            <Text className='more-icon'>•••</Text>
-            <Text className='record-icon'>⊙</Text>
-          </View> */}
         </View>
-      </View>
+      </View> */}
 
       {/* 用户信息区域 */}
       <View className='user-section' onClick={handleUpdateProfile}>
