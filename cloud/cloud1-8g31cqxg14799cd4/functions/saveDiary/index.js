@@ -11,6 +11,11 @@ const db = cloud.database()
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
   
+  console.log('===== saveDiary 调试信息 =====');
+  console.log('OPENID:', wxContext.OPENID);
+  console.log('APPID:', wxContext.APPID);
+  console.log('ENV:', wxContext.ENV);
+  console.log('SOURCE:', wxContext.SOURCE);
   try {
     const { 
       datetime, 
@@ -33,6 +38,7 @@ exports.main = async (event, context) => {
     // 保存日记
     const result = await db.collection('diaries').add({
       data: {
+        _openid: wxContext.OPENID,
         datetime: datetime || new Date().toISOString(),
         content: content || '',
         images: images || [],
