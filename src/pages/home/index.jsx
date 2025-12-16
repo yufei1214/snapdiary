@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView } from '@tarojs/components';
 import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro';
-import CalendarSection from '../../components/CalendarSection';
-import DiaryCard from '../../components/DiaryCard';
+import CalendarSection from './components/CalendarSection';
+import DiaryCard from './components/DiaryCard';
 import CustomNavBar from '@/components/CustomNavBar'
 import './index.less';
 

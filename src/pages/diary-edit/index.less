@@ -80,7 +80,7 @@
         font-size: 30rpx;
         line-height: 1.8;
         color: #333;
-        // min-height: 400rpx;
+        min-height: 300rpx;
       }
 
       .content-placeholder {
@@ -98,50 +98,10 @@
         border-radius: 24rpx;
       }
     }
-
-    // 底部操作区域
-    .bottom-actions {
-      padding: 24rpx 32rpx;
-      border-top: 1rpx solid #f0f0f0;
-
-      .action-row {
-        display: flex;
-        flex-direction: column;
-        gap: 2rpx;
-        background: #f8f8f8;
-        border-radius: 12rpx;
-        overflow: hidden;
-
-        .action-item {
-          display: flex;
-          align-items: center;
-          padding: 24rpx 32rpx;
-          background: #fff;
-          transition: all 0.3s;
-
-          &:active {
-            background: #f8f8f8;
-          }
-
-          .action-item-icon {
-            font-size: 32rpx;
-            margin-right: 24rpx;
-          }
-
-          .action-item-text {
-            flex: 1;
-            font-size: 28rpx;
-            color: #333;
-          }
-
-          .action-item-arrow {
-            font-size: 32rpx;
-            color: #ccc;
-            font-weight: 300;
-          }
-        }
-      }
-
+    .info-section {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 32rpx;
       .info-row {
         display: flex;
         justify-content: space-between;
@@ -185,6 +145,51 @@
           }
         }
       }
+    }
+    // 底部操作区域
+    .bottom-actions {
+      padding: 24rpx 32rpx;
+      border-top: 1rpx solid #f0f0f0;
+
+      .action-row {
+        display: flex;
+        flex-direction: column;
+        gap: 2rpx;
+        background: #f8f8f8;
+        border-radius: 12rpx;
+        overflow: hidden;
+
+        .action-item {
+          display: flex;
+          align-items: center;
+          padding: 24rpx 0;
+          background: #fff;
+          transition: all 0.3s;
+
+          &:active {
+            background: #f8f8f8;
+          }
+
+          .action-item-icon {
+            font-size: 32rpx;
+            margin-right: 24rpx;
+          }
+
+          .action-item-text {
+            flex: 1;
+            font-size: 28rpx;
+            color: #333;
+          }
+
+          .action-item-arrow {
+            font-size: 32rpx;
+            color: #ccc;
+            font-weight: 300;
+          }
+        }
+      }
+
+      
     }
 
     .bottom-placeholder {

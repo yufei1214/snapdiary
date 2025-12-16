@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, Text, Textarea, ScrollView } from '@tarojs/components';
 import Taro, { useLoad }  from '@tarojs/taro';
 import DateTimeHeader from './components/DateTimeHeader';
@@ -6,6 +6,7 @@ import ImageUploader from './components/ImageUploader';
 import CustomNavBar from '@/components/CustomNavBar'
 import { MOOD_LIST, WEATHER_LIST } from '@/constants/diary';
 import SelectionModal from '@/components/SelectionModal';
+import CategoryModal from './components/CategoryModal';
 import './index.less';
 
 const DiaryEdit = () => {
@@ -26,6 +27,15 @@ const DiaryEdit = () => {
 
   const [isEditMode, setIsEditMode] = useState(false); // 是否是编辑模式
   const [diaryId, setDiaryId] = useState(null); // 编辑的日记ID
+
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false)
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState([])
+
+  const categories = [
+    { id: 1, name: '运动', count: 0 },
+    { id: 2, name: '随影日记介绍', count: 3 },
+  ]
+
 
   // 接收路由参数（从首页传来的日期）
   useLoad((options) => {
@@ -128,16 +138,16 @@ const DiaryEdit = () => {
     }, 500);
   };
 
-  // 选择主题分类
+  /* // 选择主题分类
   const handleSelectCategory = () => {
     Taro.showActionSheet({
-      itemList: ['生活', '工作', '学习', '旅行', '运动', '美食', '娱乐', '其他'],
+      itemList: ['生活', '工作', '学习', '旅行', '运动'],
       success: (res) => {
-        const categories = ['生活', '工作', '学习', '旅行', '运动', '美食', '娱乐', '其他'];
+        const categories = ['生活', '工作', '学习', ];
         setCategory(categories[res.tapIndex]);
       }
     });
-  };
+  }; */
 
   // 选择模板
   const handleSelectTemplate = () => {
@@ -298,26 +308,26 @@ const DiaryEdit = () => {
     if (diffDays <= 7) return `${diffDays}天前`;
     return selectedDate.slice(5).replace('-', '月') + '日';
   };
+  // 选择主题分类
+  const handleSelectCategory = () => {
+    setCategoryModalVisible(true);
+  };
 
+  // 确认选择分类
+  const handleCategoryConfirm = (list) => {
+    setSelectedCategoryIds(list.map(item => item.id))
+  }
+
+  const categoryMap = useMemo(() => {
+    const map = {}
+    categories.forEach(item => {
+      map[item.id] = item
+    })
+    return map
+  }, [categories])
   return (
     <View className='diary-edit-page'>
       <CustomNavBar title={isEditMode? '编辑' : (isToday() ? "今天" : "补记")} onBack={handleBack} /> {/* 回忆/往日 */}
-      {/* <CustomNavBar title={getDateTitle()} onBack={handleBack} /> */}
-      
-      {/* 自定义导航栏 */}
-      {/* <View className='custom-navbar'>
-        <View className='navbar-content'>
-          <View className='nav-left' onClick={handleBack}>
-            <Text className='back-icon'>‹</Text>
-          </View>
-          <Text className='nav-title'>今天</Text>
-          <View className='nav-right'>
-            <Text className='more-icon'>•••</Text>
-            <Text className='record-icon'>⊙</Text>
-          </View>
-        </View>
-      </View> */}
-
       <ScrollView 
         className='page-content'
         scrollY
@@ -354,45 +364,11 @@ const DiaryEdit = () => {
             <View className='auto-save-tip'>草稿自动保存</View>
           )}
         </View>
-
-        {/* 图片上传区域 */}
-        <ImageUploader
-          images={images}
-          onChange={setImages}
-        />
-
-        {/* 底部操作区域 */}
-        <View className='bottom-actions'>
-          {/* 功能按钮行 */}
-          {/* TODO */}
-          {/* <View className='action-row'>
-            <View className='action-item' onClick={handleSelectCategory}>
-              <Text className='action-item-icon'>#</Text>
-              <Text className='action-item-text'>
-                {category || '主题分类'}
-              </Text>
-              <Text className='action-item-arrow'>›</Text>
-            </View>
-
-            <View className='action-item' onClick={handleSelectTemplate}>
-              <Text className='action-item-icon'>📄</Text>
-              <Text className='action-item-text'>模板</Text>
-              <Text className='action-item-arrow'>›</Text>
-            </View>
-
-            <View className='action-item' onClick={handleSelectLocation}>
-              <Text className='action-item-icon'>📍</Text>
-              <Text className='action-item-text'>
-                {location ? location.name : '所在位置'}
-              </Text>
-              <Text className='action-item-arrow'>›</Text>
-            </View>
-          </View> */}
-
+        <View className="info-section">
           {/* 字数统计和其他信息 */}
           <View className='info-row'>
             <View className='info-item'>
-              <Text className='info-icon'>🕐</Text>
+              <Text className='info-icon'>✏️</Text>
               <Text className='info-text'>字数: {wordCount}</Text>
             </View>
             {/* TODO */}
@@ -403,13 +379,61 @@ const DiaryEdit = () => {
           </View>
         </View>
 
+        {/* 图片上传区域 */}
+        <ImageUploader
+          images={images}
+          onChange={setImages}
+        />
+
+        {/* 底部操作区域 */}
+        <View className='bottom-actions'>
+          
+          {/* 功能按钮行 */}
+          <View className='action-row'>
+            <View className='action-item' onClick={handleSelectCategory}>
+              <Text className='action-item-icon'>#</Text>
+              <Text className='action-item-text'>
+                主题分类{selectedCategoryIds.length > 0 ? `：${
+                  selectedCategoryIds
+      .map(id => categoryMap[id]?.name)
+      .filter(Boolean)
+      .join('、')}` : ''}
+              </Text>
+              <Text className='action-item-arrow'>›</Text>
+            </View>
+            {/* 分类弹窗 */}
+            <CategoryModal 
+              visible={categoryModalVisible} 
+              categoryList={categories}
+              selectedIds={selectedCategoryIds}
+              onChange={handleCategoryConfirm}
+              onClose={() => setCategoryModalVisible(false)}
+            />
+
+            {/* TODO */}
+            {/* <View className='action-item' onClick={handleSelectTemplate}>
+              <Text className='action-item-icon'>📄</Text>
+              <Text className='action-item-text'>模板</Text>
+              <Text className='action-item-arrow'>›</Text>
+            </View> */}
+
+            <View className='action-item' onClick={handleSelectLocation}>
+              <Text className='action-item-icon'>📍</Text>
+              <Text className='action-item-text'>
+                {location ? location.name : '所在位置'}
+              </Text>
+              <Text className='action-item-arrow'>›</Text>
+            </View>
+          </View>
+        </View>
+
         {/* 底部占位 */}
         <View className='bottom-placeholder' />
       </ScrollView>
 
       <SelectionModal
         visible={moodModalVisible}
-        title='现在的心情怎么样'
+        title='心情'
         items={MOOD_LIST} 
         columns={5} 
         selected={mood}
@@ -419,7 +443,7 @@ const DiaryEdit = () => {
 
       <SelectionModal
         visible={weatherModalVisible}
-        title='今天的天气怎么样'
+        title='天气'
         items={WEATHER_LIST} 
         columns={4} 
         selected={weather}

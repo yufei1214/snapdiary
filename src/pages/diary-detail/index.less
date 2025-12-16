@@ -169,7 +169,29 @@
     justify-content: space-around;
     padding: 0 16rpx;
     z-index: 100;
-
+    .action-btn-share {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      line-height: 1;
+      
+      &::after {
+        border: none; // ✅ 移除 button 默认边框
+      }
+      
+      .action-item {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8rpx;
+        padding: 16rpx;
+      }
+    }
     .action-item {
       flex: 1;
       display: flex;

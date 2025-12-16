@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components';
 import Taro, { useRouter, useDidShow } from '@tarojs/taro';
 import CustomNavBar from '@/components/CustomNavBar'
 import { Lunar, Solar } from 'lunar-javascript';
+import { useShareAppMessage } from '@tarojs/taro';
 import './index.less';
 
 const DiaryDetail = () => {
@@ -143,6 +144,22 @@ const DiaryDetail = () => {
       }
     });
   };
+
+  // 配置分享给好友
+  useShareAppMessage(() => {
+    if (!diary) {
+      return {
+        title: '随影日记',
+        path: '/pages/home/index'
+      };
+    }
+    
+    return {
+      title: diary.content ? diary.content.substring(0, 30) + '...' : '查看我的日记',
+      path: `/pages/diary-detail/index?id=${id}`,
+      imageUrl: diary.images && diary.images.length > 0 ? diary.images[0] : ''
+    };
+  });
 
   // 编辑日记
   const handleEdit = () => {
@@ -294,10 +311,13 @@ const DiaryDetail = () => {
 
       {/* 底部操作栏 */}
       <View className='bottom-action-bar'>
-        <View className='action-item' onClick={handleShare}>
-          <Text className='action-icon'>🔗</Text>
-          <Text className='action-text'>分享</Text>
-        </View>
+        <button className='action-btn-share' open-type='share'>
+          <View className='action-item'>
+            <Text className='action-icon'>🔗</Text>
+            <Text className='action-text'>分享</Text>
+          </View>
+        </button>
+        
         
         <View className='action-item' onClick={handleLike}>
           <Text className='action-icon'>❤️</Text>

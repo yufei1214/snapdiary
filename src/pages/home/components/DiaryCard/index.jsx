@@ -19,8 +19,9 @@ const DiaryCard = ({
     tagColor,      // 标签背景色
     tagText,       // 标签文字
     isStarred,     // 是否标星
+    weather,
   } = diary;
-
+  console.log('DiaryCard diary:', diary);
   // 格式化日期显示
   const formatDate = () => {
     if (!date) return '';
@@ -63,7 +64,7 @@ const DiaryCard = ({
         </View>
         
         {/* 封面图片（如果有） */}
-        {coverImage && (
+        {/* {coverImage && (
           <View className='card-image-wrapper'>
             <Image 
               className='card-image' 
@@ -71,11 +72,41 @@ const DiaryCard = ({
               mode='aspectFill'
             />
           </View>
-        )}
+        )} */}
       </View>
 
       {/* 右侧标签 */}
-      {tagIcon && (
+      {
+        coverImage ? 
+        <View className='card-image-wrapper'>
+            <Image 
+              className='card-image' 
+              src={coverImage} 
+              mode='aspectFill'
+            />
+        </View>
+        :
+        <View 
+          className='card-tag'
+          style={{ backgroundColor: tagColor || '#FFD700' }}
+        >
+          <Text className='tag-icon-emoji'>{tagIcon}</Text>
+          <Text className='tag-icon-emoji'>{weather.emoji}</Text>
+          {/* {tagIcon.startsWith('http') ? (
+            <Image className='tag-icon-img' src={tagIcon} mode='aspectFit' />
+          ) : (
+            <Text className='tag-icon-emoji'>{tagIcon}</Text>
+          )}
+          {tagText && (
+            <View className='tag-text-wrapper'>
+              {tagText.split('').map((char, index) => (
+                <Text key={index} className='tag-text-char'>{char}</Text>
+              ))}
+            </View>
+          )} */}
+        </View>
+      }
+      {/* {tagIcon && (
         <View 
           className='card-tag'
           style={{ backgroundColor: tagColor || '#FFD700' }}
@@ -93,7 +124,7 @@ const DiaryCard = ({
             </View>
           )}
         </View>
-      )}
+      )} */}
     </View>
   );
 };
